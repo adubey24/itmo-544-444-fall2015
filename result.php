@@ -21,45 +21,63 @@ print_r($_FILES);
 
 print "</pre>";
 require 'vendor/autoload.php';
-use Aws\S3\S3Client;
+#use Aws\S3\S3Client;
+#$client = S3Client::factory();
 
-$client = S3Client::factory();
+$s3 = new Aws\S3\S3Client([
+    'version' => 'latest',
+    'region'  => 'us-east-1'
+]);
+
 $bucket = uniqid("php-ad-",false);
 
-$result = $client->createBucket(array(
-      'Bucket' => $bucket
-));
+#$result = $client->createBucket(array(
+#      'Bucket' => $bucket
+#));
 
-$client->waitUntilBucketExists(array('Bucket' => $bucket));
-$key = $uploadfile;
-$result = $client->putObject(array(
-      'ACL' => 'public-read',
-      'Bucket' => $bucket,
-      'Key' => $key,
-      'SourceFile' => $uploadfile
-));
+# AWS PHP SDK version 3 create bucket
+$result = $s3->createBucket([
+    'ACL' => 'public-read',
+    'Bucket' => $bucket
+]);
+
+
+#$client->waitUntilBucketExists(array('Bucket' => $bucket));
+#$key = $uploadfile;
+#$result = $client->putObject(array(
+#      'ACL' => 'public-read',
+#      'Bucket' => $bucket,
+#      'Key' => $key,
+#      'SourceFile' => $uploadfile
+#));
+
+# PHP version 3
+$result = $client->putObject([
+    'ACL' => 'public-read',
+    'Bucket' => $bucket,
+   'Key' => $uploadfile
+]);  
+
 
 $url = $result['ObjectURL'];
 echo $url;
 
-use Aws\Rds\RdsClient;
-$client = RdsClient::factory(array(
-'region' => 'us-east-1'
-));
+$rds = new Aws\Rds\RdsClient([
+    'version' => 'latest',
+    'region'  => 'us-east-1'
+]);
 
-$result = $client->describeDBInstances(array(
+
+$result = $rds->describeDBInstances([
     'DBInstanceIdentifier' => 'itmo544addb',
 ));
 
-$endpoint = "";
+$endpoint = $result['DBInstances']['Endpoint']['Address']
+     echo "============\n". $endpoint . "================";^M
 
-foreach ($result->getPath('DBInstances/*/Endpoint/Address')  as $ep) {
-  //Do something with the message
-   echo "========". $ep . "========";
-   $endpoint = $ep;
-}
+
 //echo "begin database";
-$link = mysqli_connect($endpoint,"controller","anvi2416","itmo544db") or die("Error " . mysqli_error($link));
+$link = mysqli_connect($endpoint,"controller","anvi2416","customerrecords") or die("Error " . mysqli_error($link));
 
 /*check connection*/
 if (mysqli_connect_errno()) {
@@ -67,13 +85,13 @@ if (mysqli_connect_errno()) {
     exit();
 }
 
-/"Prepared statement, stage 1: prepare*/
+/*Prepared statement, stage 1: prepare*/
 if (!($stmt = $link->prepare(INSERT INTO items (id, email,phone,filename,s3rawurl,s3finishedurl,status,issubscribed) VALUES (NULL,?,?,?,?,?,?,?)"))) {
     echo "Prepare failed: (" . $link->errno . ")" . $link->error;
 }
 
-$email = $_POST['useremail']
-$phone = $_POST['phone']
+$email = $_POST['useremail'];
+$phone = $_POST['phone'];
 $s3rawurl = $url; // $result['ObjectURL']; from above
 $filename = basename($_FILES['userfile']['name']);
 $s3finishedurl = "none";
