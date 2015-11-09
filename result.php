@@ -119,8 +119,6 @@ while ($row = $res->fetch_assoc()) {
 
 $link->close();
 
-echo "Please click here to select the Raw s3 url and display images in gallery format for all users <a href='gallery.php' title='To Gallery' class='whatEver'>Anchor text</a>";
-
 ?>
 
 
