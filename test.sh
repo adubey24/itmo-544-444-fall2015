@@ -5,7 +5,7 @@
 #declare an array in bash
 declare -a instanceARR
 
-mapfile -t instanceARR < <(aws ec2 run-instances --image-id ami-d05e75b8 --count $1 --instance-type t2.micro --key-name itmo544-virtualbox --security-group-ids sg-aea298c9 --subnet-id subnet-3bf8a910 --associate-public-ip-address --iam-instance-profile Name=phpdeveloper --user-data file://itmo-544-444-env/install-webserver.sh --output table | grep InstanceId | sed "s/|//g" | tr -d ' ' | sed "s/InstanceId//g")
+mapfile -t instanceARR < <(aws ec2 run-instances --image-id ami-d05e75b8 --count $1 --instance-type t2.micro --key-name itmo544-virtualbox --security-group-ids sg-aea298c9 --subnet-id subnet-3bf8a910 --associate-public-ip-address --iam-instance-profile Name=phpdeveloper --user-data file://../itmo-544-444-env/install-webserver.sh --output table | grep InstanceId | sed "s/|//g" | tr -d ' ' | sed "s/InstanceId//g")
 
 echo ${instanceARR[@]}
 
@@ -28,7 +28,7 @@ for i in {0..60}; do echo -ne '.'; sleep 1;done
 
 #create launch configuration
 
-aws autoscaling create-launch-configuration --launch-configuration-name itmo544ad-launch-config --image-id ami-d05e75b8 --key-name itmo544-virtualbox --security-groups sg-aea298c9 --instance-type t2.micro --user-data file://itmo-544-444-env/install-webserver.sh --iam-instance-profile phpdeveloper
+aws autoscaling create-launch-configuration --launch-configuration-name itmo544ad-launch-config --image-id ami-d05e75b8 --key-name itmo544-virtualbox --security-groups sg-aea298c9 --instance-type t2.micro --user-data file://../itmo-544-444-env/install-webserver.sh --iam-instance-profile phpdeveloper
 
 #create an autoscaling group
 
