@@ -12,7 +12,7 @@ $uploadfile = $uploaddir . basename($_FILES['userfile']['name']);
 echo '<pre>';
 if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile)) {
     echo "File is valid, and was successfully uploaded.\n";
-} else{
+} else {
     echo "Possible file upload attack!\n";
 }
 
@@ -69,14 +69,14 @@ $rds = new Aws\Rds\RdsClient([
 
 
 $result = $rds->describeDBInstances([
-    'DBInstanceIdentifier' => 'itmo544addb',
-));
+    'DBInstanceIdentifier' => 'ad-db',
+]);
 
-$endpoint = $result['DBInstances']['Endpoint']['Address']
-     echo "============\n". $endpoint . "================";^M
+$endpoint = $result['DBInstances']['Endpoint']['Address'];
+     echo "============\n". $endpoint . "================";
 
 
-//echo "begin database";
+//echo "begin database";^M
 $link = mysqli_connect($endpoint,"controller","anvi2416","customerrecords") or die("Error " . mysqli_error($link));
 
 /*check connection*/
@@ -86,8 +86,8 @@ if (mysqli_connect_errno()) {
 }
 
 /*Prepared statement, stage 1: prepare*/
-if (!($stmt = $link->prepare(INSERT INTO items (id, email,phone,filename,s3rawurl,s3finishedurl,status,issubscribed) VALUES (NULL,?,?,?,?,?,?,?)"))) {
-    echo "Prepare failed: (" . $link->errno . ")" . $link->error;
+if (!($stmt = $link->prepare("INSERT INTO items (id, email,phone,filename,s3rawurl,s3finishedurl,status,issubscribed) VALUES (NULL,?,?,?,?,?,?,?)"))) {
+    echo "Prepare failed: (" . $link->errno . ") " . $link->error;
 }
 
 $email = $_POST['useremail'];
@@ -101,7 +101,7 @@ $issubscribed=0;
 $stmt->bind_param("sssssii",$email,$phone,$filename,$s3rawurl,$s3finishedurl,$status,$issubscribed);
 
 if (!$stmt->execute()) {
-   echo "Execute failed: (" . $stmt->errno . ")" . $stmt->error;
+   echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
 }
 
 printf("%d Row inserted.\n", $stmt->affected_rows);
@@ -118,6 +118,8 @@ while ($row = $res->fetch_assoc()) {
 }
 
 $link->close();
+
+echo "Please click here to select the Raw s3 url and display images in gallery format for all users <a href='gallery.php' title='To Gallery' class='whatEver'>Anchor text</a>";
 
 ?>
 
