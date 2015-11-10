@@ -1,4 +1,5 @@
-<?php
+<? php
+
 // Start the session^M
 
 require 'vendor/autoload.php';
@@ -18,7 +19,7 @@ $result = $rds->createDBInstance([
    # 'DBClusterIdentifier' => '<string>',
 
     'DBInstanceClass' => 'db.t1.micro', // REQUIRED
-    'DBInstanceIdentifier' => 'mp1-ad', // REQUIRED
+    'DBInstanceIdentifier' => 'ad-db', // REQUIRED
     'DBName' => 'customerrecords',
 
     #'DBParameterGroupName' => '<string>',
@@ -62,13 +63,13 @@ print "Create RDS DB results: \n";
 
 # print_r($rds);
 
-$result = $rds->waitUntil('DBInstanceAvailable',['DBInstanceIdentifier' => 'mp1-ad',
+$result = $rds->waitUntil('DBInstanceAvailable',['DBInstanceIdentifier' => 'ad-db',
 ]);
 
 // Create a table 
 
 $result = $rds->describeDBInstances([
-    'DBInstanceIdentifier' => 'mp1-ad',
+    'DBInstanceIdentifier' => 'ad-db',
 ]);
 $endpoint = $result['DBInstances'][0]['Endpoint']['Address'];
 print "============\n". $endpoint . "================\n";
@@ -83,4 +84,5 @@ Title VARCHAR(32),
 Content VARCHAR(500)
 )";
 $con->query($sql);
+
 ?>
