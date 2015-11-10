@@ -73,7 +73,7 @@ $result = $rds->describeDBInstances([
     'DBInstanceIdentifier' => 'ad-db',
 ]);
 
-$endpoint = $result['DBInstances'][0]['Endpoint']['Address'];
+$endpoint = $result['DBInstances']['Endpoint']['Address'];
      echo "============\n". $endpoint . "================";
 
 
