@@ -56,6 +56,7 @@ $result = $s3->putObject([
     'ACL' => 'public-read',
     'Bucket' => $bucket,
    'Key' => $uploadfile
+   'SourceFile' => $uploadfile
 ]);  
 
 
@@ -72,7 +73,7 @@ $result = $rds->describeDBInstances([
     'DBInstanceIdentifier' => 'ad-db',
 ]);
 
-$endpoint = $result['DBInstances']['Endpoint']['Address'];
+$endpoint = $result['DBInstances'][0]['Endpoint']['Address'];
      echo "============\n". $endpoint . "================";
 
 
