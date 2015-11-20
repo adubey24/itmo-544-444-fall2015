@@ -34,6 +34,15 @@ aws autoscaling create-launch-configuration --launch-configuration-name itmo544a
 
 aws autoscaling create-auto-scaling-group --auto-scaling-group-name itmo-544-extended-auto-scaling-group-2 --launch-configuration-name itmo544ad-launch-config --load-balancer-names $2  --health-check-type ELB --min-size 3 --max-size 6 --desired-capacity 3 --default-cooldown 600 --health-check-grace-period 120 --vpc-zone-identifier subnet-3bf8a910
 
+#command to create subnet group
+
+aws rds create-db-subnet-group --db-subnet-group-name mp1 --db-subnet-group-description "group for mp1" --subnet-ids subnet-8759a3ba subnet-3bf8a910
+
+
+aws rds create-db-instance --db-instance-identifier ad-db --db-instance-class db.t1.micro --engine MySQL --master-username controller --master-user-password anvi2416 --allocated-storage 5 --db-subnet-group-name mp1 --db-name customerrecords
+
+aws rds wait db-instance-available --db-instance-identifier ad-db
+
 #last step
 #firefox SELBURL &
 export ELBURL
