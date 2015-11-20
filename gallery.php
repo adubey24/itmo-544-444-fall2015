@@ -11,24 +11,24 @@ $email = $_POST["email"];
 echo $email;
 require 'vendor/autoload.php';
 
-use Aws\Rds\RdsClient;
-$client = RdsClient::factory(array(
+$rds = new Aws\Rds\RdsClient([
+'version' => 'latest',
 'region'  => 'us-east-1'
-));
+]);
 
-$result = $client->describeDBInstances(array(
+//Create Table
+$result = $rds->describeDBInstances([
     'DBInstanceIdentifier' => 'ad-db',
-));
+]);
 
-$endpoint = "";
+$endpoint = $result['DBInstances'][0]['Endpoint']['Address'];
 
-foreach ($result->getPath('DBInstances/*/Endpoint/Address') as $ep) {
     // Do something with the message
-    echo "============". $ep . "================";
-    $endpoint = $ep;
-}   
+    print "============\n". $endpoint . "================\n";
+   
+
 //echo "begin database";
-$link = mysqli_connect($endpoint,"controller","anvi2416","ad-db") or die("Error " . mysqli_error($link));
+$link = mysqli_connect($endpoint,"controller","anvi2416","customerrecords") or die("Error " . mysqli_error($link));
 
 /* check connection */
 if (mysqli_connect_errno()) {
@@ -45,8 +45,9 @@ $link->real_query("SELECT * FROM items WHERE email = '$email'");
 $res = $link->use_result();
 echo "Result set order...\n";
 while ($row = $res->fetch_assoc()) {
-    echo "<img src =\" " . $row['s3rawurl'] . "\" /><img src =\"" .$row['s3finishedurl'] . "\"/>";
-echo $row['id'] . "Email: " . $row['email'];
+    echo "<img src =\" " . $row['s3rawurl'] . "\" />";
+//echo <img src =\"" .$row['s3finishedurl'] . "\"/>";
+echo "<p>".$row['id'] . "Email: " . $row['email']."</p>";
 }
 $link->close();
 ?>
