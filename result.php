@@ -74,11 +74,11 @@ $result = $rds->describeDBInstances([
 ]);
 
 $endpoint = $result['DBInstances']['Endpoint']['Address'];
-     echo "============\n". $endpoint . "================";
+     echo "<p>============</p>". $endpoint . "<p>=============</p>";
 
 
-//echo "begin database";^M
-$link = mysqli_connect($endpoint,"controller","anvi2416","customerrecords") or die("Error " . mysqli_error($link));
+//echo "begin database";
+$link = mysqli_connect($endpoint,"controller","anvi2416","customerrecords") or die("Error " . mysqli_connect_error($link));
 
 /*check connection*/
 if (mysqli_connect_errno()) {
