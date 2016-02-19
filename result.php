@@ -29,6 +29,12 @@ $s3 = new Aws\S3\S3Client([
     'region'  => 'us-east-1'
 ]);
 
+use Aws\Sns\SnsClient;
+$sns = SnsClient::factory(array(
+'version' => 'latest',
+'region' => 'us-east-1'
+));
+
 $bucket = uniqid("php-ad-",false);
 
 #$result = $client->createBucket(array(
@@ -119,6 +125,35 @@ while ($row = $res->fetch_assoc()) {
 }
 
 $link->close();
+
+//add code to detect if subscribed to SNS topic 
+
+// creating sns topic
+$topicArn = $sns->createTopic([
+'Name' => 'MP2-sns-test',
+]);
+
+echo "<a/>";
+echo "ARN is:";
+echo $topicArn['TopicArn'];
+
+$topicAttributes = $sns->setTopicAttributes([
+'TopicArn' => $topicArn['TopicArn'],
+'AttributeName'=>'DisplayName',
+'AttributeValue'=>'MP2-alert',
+]);
+
+$topicSubscribe = $sns->subscribe(array(
+    // TopicArn is required
+    'TopicArn' => $topicArn['TopicArn'],
+    // Protocol is required
+    'Protocol' => 'email',
+    'Endpoint' => $email,
+));
+
+
+
+
 
 ?>
 
