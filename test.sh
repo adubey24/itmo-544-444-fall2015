@@ -43,6 +43,22 @@ aws rds create-db-instance --db-instance-identifier ad-db --db-instance-class db
 
 aws rds wait db-instance-available --db-instance-identifier ad-db
 
+#creating sns-topic 
+
+ARN=(`aws sns create-topic --name ad-cloud-watch`)
+
+echo "This is the ARN : $ARN"
+
+aws sns set-topic-attributes --topic-arn $ARN --attribute-name DisplayName --attribute-value cloud-watch
+aws sns subscribe --topic-arn $ARN --protocol email --notification-endpoint adubey4@hawk.iit.edu
+
+# creating cloud watch metrics
+
+aws cloudwatch put-metric-alarm --alarm-name ad-cloud-watch --alarm-description "Alarm when CPU exceeds 30" --metric-name Latency --namespace AWS/ELB --statistic Maximum --period 60 --threshold 30 --comparison-operator GreaterThanOrEqualToThreshold  --dimensions Name=LoadBalancerName,Value=$2 --evaluation-periods 6 --alarm-actions $ARN --unit Milliseconds
+
+echo "Created Cloud watch metrics"
+
+
 #last step
 #firefox SELBURL &
 export ELBURL
